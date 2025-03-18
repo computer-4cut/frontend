@@ -31,7 +31,7 @@ class _StartPageState extends State<StartPage> {
                     left: 200,
                     right: 200,
                     top: 100,
-                    bottom: 200,
+                    bottom: 160,
                   ),
                   child: Column(
                     children: [
