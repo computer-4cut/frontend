@@ -28,9 +28,9 @@ class _StartPageState extends State<StartPage> {
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.only(
-                    left: 300,
-                    right: 300,
-                    top: 200,
+                    left: 200,
+                    right: 200,
+                    top: 100,
                     bottom: 200,
                   ),
                   child: Column(
@@ -97,7 +97,7 @@ class _StartPageState extends State<StartPage> {
                       GradientText(
                         '컴공네컷',
                         style: TextStyle(
-                          fontSize: 135,
+                          fontSize: 100,
                           fontWeight: FontWeight.bold,
                           fontFamily: CustomFontFamily.hsyuji,
                         ),
