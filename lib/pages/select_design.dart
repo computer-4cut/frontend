@@ -7,7 +7,21 @@ class SelectDesignPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Select Design')),
-      body: Center(child: Text('Select a design from the options below.')),
+      body: Stack(
+        children: [
+          Center(child: Text('Select a design from the options below.')),
+          Positioned(
+            right: 16,
+            bottom: 16,
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/select_picture');
+              },
+              child: const Icon(Icons.arrow_forward),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

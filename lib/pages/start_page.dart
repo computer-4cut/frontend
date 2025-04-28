@@ -50,9 +50,17 @@ class _StartPageState extends State<StartPage> {
                                   width: 10,
                                 ),
                               ),
-                              child: Image.asset(
-                                'assets/images/1.png',
-                                fit: BoxFit.cover,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/select_picture',
+                                  );
+                                },
+                                child: Image.asset(
+                                  'assets/images/1.png',
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                             Container(
@@ -62,9 +70,17 @@ class _StartPageState extends State<StartPage> {
                                   width: 10,
                                 ),
                               ),
-                              child: Image.asset(
-                                'assets/images/2.png',
-                                fit: BoxFit.cover,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/select_picture',
+                                  );
+                                },
+                                child: Image.asset(
+                                  'assets/images/2.png',
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                             Container(
@@ -74,9 +90,17 @@ class _StartPageState extends State<StartPage> {
                                   width: 10,
                                 ),
                               ),
-                              child: Image.asset(
-                                'assets/images/3.png',
-                                fit: BoxFit.cover,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/select_picture',
+                                  );
+                                },
+                                child: Image.asset(
+                                  'assets/images/3.png',
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                             Container(
@@ -86,9 +110,17 @@ class _StartPageState extends State<StartPage> {
                                   width: 10,
                                 ),
                               ),
-                              child: Image.asset(
-                                'assets/images/4.png',
-                                fit: BoxFit.cover,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/select_picture',
+                                  );
+                                },
+                                child: Image.asset(
+                                  'assets/images/4.png',
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ],
