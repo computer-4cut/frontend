@@ -31,7 +31,7 @@ class _StartPageState extends State<StartPage> {
                     left: 200,
                     right: 200,
                     top: 100,
-                    bottom: 200,
+                    bottom: 160,
                   ),
                   child: Column(
                     children: [
@@ -142,8 +142,11 @@ class _StartPageState extends State<StartPage> {
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.zero,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
+                            borderRadius: BorderRadius.circular(30),
                           ),
+                          shadowColor: Colors.black.withValues(alpha: 1),
+                          elevation: 10,
+                          backgroundColor: Colors.transparent,
                         ),
                         onPressed: () {
                           Navigator.push(
@@ -153,7 +156,7 @@ class _StartPageState extends State<StartPage> {
                             ),
                           );
                         },
-                        clipBehavior: Clip.hardEdge,
+                        clipBehavior: Clip.antiAlias,
                         child: Ink(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
@@ -161,14 +164,12 @@ class _StartPageState extends State<StartPage> {
                               end: Alignment.centerRight,
                               colors: [Color(0xFF617EF1), Color(0xFF7D49A8)],
                             ),
-                            borderRadius: BorderRadius.circular(25),
+                            borderRadius: BorderRadius.circular(30),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withAlpha(
-                                  (0.2 * 255).toInt(),
-                                ),
-                                spreadRadius: 2,
-                                blurRadius: 25,
+                                color: Colors.black.withValues(alpha: 1),
+                                spreadRadius: 5,
+                                blurRadius: 10,
                                 offset: Offset(0, 3),
                               ),
                             ],

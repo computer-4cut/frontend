@@ -1,7 +1,6 @@
-<<<<<<< HEAD
-# frontend
-=======
-# commit4cut
+# 컴공네컷 프론트엔드
+
+## commit4cut
 
 A new Flutter project.
 
@@ -17,4 +16,3 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
->>>>>>> 62a3c02 (Flutter 프로젝트 초기 설정 및 파일 추가)
