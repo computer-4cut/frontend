@@ -26,13 +26,50 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
     }
   }
 
+  void _showWarningDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            '알림',
+            style: TextStyle(
+              fontFamily: CustomFontFamily.hsyuji,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            '4장의 사진을 모두 선택해주세요!',
+            style: TextStyle(fontFamily: CustomFontFamily.hsyuji, fontSize: 20),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                '확인',
+                style: TextStyle(
+                  fontFamily: CustomFontFamily.hsyuji,
+                  fontSize: 18,
+                  color: Color(0xFF7D7BEA),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 80),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -61,8 +98,8 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
-              // 사진 그리드 (테두리만)
+              const SizedBox(height: 80),
+              // 사진 그리드
               Expanded(
                 child: GridView.builder(
                   itemCount: 6,
@@ -70,7 +107,7 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
                     crossAxisCount: 3,
                     crossAxisSpacing: 24,
                     mainAxisSpacing: 24,
-                    childAspectRatio: 3 / 4, // 아이패드 비율에 맞게
+                    childAspectRatio: 3 / 4, // 아이패드 에어 5세대 비율
                   ),
                   itemBuilder: (context, index) {
                     return GestureDetector(
@@ -78,8 +115,9 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
                       child: Stack(
                         children: [
                           Container(
+                            width: double.infinity,
+                            height: double.infinity,
                             decoration: BoxDecoration(
-                              color: Colors.white,
                               border: Border.all(
                                 color:
                                     _selectedPictures[index]
@@ -88,6 +126,17 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
                                 width: 2,
                               ),
                               borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: FittedBox(
+                                fit: BoxFit.cover,
+                                child: Image.asset(
+                                  'assets/images/1.png',
+                                  width: 300, // 고정된 너비
+                                  height: 400, // 고정된 높이
+                                ),
+                              ),
                             ),
                           ),
                           if (_selectedPictures[index])
@@ -122,7 +171,13 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
               // 다음 버튼
               Center(
                 child: ElevatedButton(
-                  onPressed: _selectedCount == 4 ? () {} : null,
+                  onPressed: () {
+                    if (_selectedCount == 4) {
+                      Navigator.pushNamed(context, '/loading');
+                    } else {
+                      _showWarningDialog();
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.zero,
                     shape: RoundedRectangleBorder(
@@ -138,8 +193,8 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
                       borderRadius: BorderRadius.circular(18),
                     ),
                     child: Container(
-                      width: 260,
-                      height: 60,
+                      width: 500,
+                      height: 80,
                       alignment: Alignment.center,
                       child: Text(
                         '다음으로 넘어가기',
