@@ -60,6 +60,9 @@ flutter:
     - family: HSYuji
       fonts:
         - asset: fonts/HSYuji-Regular.ttf
+    - family: BMDOHYEON
+      fonts:
+        - asset: fonts/BMDOHYEON_ttf.ttf
 
   assets:
     - assets/images/1.png

@@ -88,7 +88,7 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
                     ),
                   ),
                   Text(
-                    '${_selectedCount} / 4',
+                    '$_selectedCount / 4',
                     style: TextStyle(
                       fontFamily: CustomFontFamily.hsyuji,
                       fontSize: 28,

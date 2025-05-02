@@ -32,4 +32,5 @@ class CustomFontFamily {
   ///        - asset: fonts/HSYuji-Regular.ttf
   /// ```
   static const hsyuji = "HSYuji";
+  static const dohyeon = "BMDOHYEON";
 }
