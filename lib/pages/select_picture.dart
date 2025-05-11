@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:commit4cut/style/font.dart';
+import 'package:commit4cut/util.dart';
 
 class SelectPicturePage extends StatefulWidget {
   const SelectPicturePage({super.key});
@@ -77,13 +78,15 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
               Row(
                 children: [
                   Expanded(
-                    child: Text(
+                    child: GradientText(
                       '사진을 선택하세요!',
                       style: TextStyle(
                         fontFamily: CustomFontFamily.hsyuji,
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF7D7BEA),
+                      ),
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF617EF1), Color(0xFF7D49A8)],
                       ),
                     ),
                   ),
