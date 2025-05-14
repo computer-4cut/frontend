@@ -38,6 +38,7 @@ class _StartPageState extends State<StartPage> {
                           crossAxisSpacing: 16.0,
                           mainAxisSpacing: 16.0,
                           childAspectRatio: 1,
+                          physics: const NeverScrollableScrollPhysics(),
                           children: <Widget>[
                             Container(
                               decoration: BoxDecoration(
@@ -47,6 +48,7 @@ class _StartPageState extends State<StartPage> {
                                 ),
                               ),
                               child: GestureDetector(
+                                // 임시, 지울 것!
                                 onTap: () {
                                   Navigator.pushNamed(
                                     context,
@@ -134,16 +136,8 @@ class _StartPageState extends State<StartPage> {
                         ),
                       ),
                       SizedBox(height: 160),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          shadowColor: Colors.black.withValues(alpha: 1),
-                          elevation: 10,
-                          backgroundColor: Colors.transparent,
-                        ),
+                      GradientButton(
+                        text: '시작하기',
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -152,41 +146,6 @@ class _StartPageState extends State<StartPage> {
                             ),
                           );
                         },
-                        clipBehavior: Clip.antiAlias,
-                        child: Ink(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                              colors: [Color(0xFF617EF1), Color(0xFF7D49A8)],
-                            ),
-                            borderRadius: BorderRadius.circular(30),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 1),
-                                spreadRadius: 5,
-                                blurRadius: 10,
-                                offset: Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Container(
-                            alignment: Alignment.center,
-                            constraints: BoxConstraints(
-                              maxWidth: 400,
-                              maxHeight: 115,
-                            ),
-                            child: Text(
-                              '시작하기',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 60,
-                                fontFamily: CustomFontFamily.hsyuji,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ),
-                        ),
                       ),
                     ],
                   ),

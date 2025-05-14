@@ -173,7 +173,8 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
               const SizedBox(height: 8),
               // 다음 버튼
               Center(
-                child: ElevatedButton(
+                child: GradientButton(
+                  text: '다음으로 넘어가기',
                   onPressed: () {
                     if (_selectedCount == 4) {
                       Navigator.pushNamed(context, '/loading');
@@ -181,34 +182,10 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
                       _showWarningDialog();
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    elevation: 8,
-                  ),
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Color(0xFF7D7BEA), Color(0xFF7DC8EA)],
-                      ),
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Container(
-                      width: 500,
-                      height: 80,
-                      alignment: Alignment.center,
-                      child: Text(
-                        '다음으로 넘어가기',
-                        style: TextStyle(
-                          fontFamily: CustomFontFamily.hsyuji,
-                          fontSize: 28,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
+                  borderRadius: 18,
+                  width: 500,
+                  height: 80,
+                  fontSize: 28,
                 ),
               ),
               const SizedBox(height: 16),
