@@ -16,12 +16,10 @@ class _CameraPageState extends State<CameraPage> {
   late Timer _timer;
   int _currentImageIndex = 1;
   final int _maxImages = 6;
-  late int _designIndex;
 
   @override
   void initState() {
     super.initState();
-    _designIndex = widget.index;
     _startCountdown();
   }
 
