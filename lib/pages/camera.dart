@@ -54,14 +54,6 @@ class _CameraPageState extends State<CameraPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text('디자인 ${_designIndex + 1}'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
       body: Stack(
         children: [
           Container(
@@ -73,28 +65,28 @@ class _CameraPageState extends State<CameraPage> {
               child: Container(
                 color: Colors.white,
                 margin: const EdgeInsets.all(10.0),
-                child: Center(
-                  child: Text(
-                    '$_countdown',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 120,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+              ),
+            ),
+          ),
+          Center(
+            child: Text(
+              '$_countdown',
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 120,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
           Positioned(
-            bottom: 20,
+            bottom: 40,
             left: 0,
             right: 0,
             child: Center(
               child: Text(
                 '카메라를 봐주세요!',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   fontFamily: CustomFontFamily.dohyeon,
@@ -104,11 +96,11 @@ class _CameraPageState extends State<CameraPage> {
           ),
           Positioned(
             bottom: 50,
-            right: 20,
+            right: 50,
             child: Text(
               '$_currentImageIndex / $_maxImages',
               style: const TextStyle(
-                color: Colors.white,
+                color: Colors.black,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
