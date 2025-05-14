@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:commit4cut/style/picture_design.dart';
 import 'package:commit4cut/style/font.dart';
+import 'package:commit4cut/pages/camera.dart';
 
 class SelectDesignPage extends StatefulWidget {
   const SelectDesignPage({super.key});
@@ -52,9 +53,9 @@ class SelectDesignPageState extends State<SelectDesignPage> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              buildDesignItem(0), // 첫 번째 디자인 (왼쪽 상단)
+                              getDesign(context, 0), // 첫 번째 디자인 (왼쪽 상단)
                               const SizedBox(width: 20.0),
-                              buildDesignItem(1), // 두 번째 디자인 (오른쪽 상단)
+                              getDesign(context, 1), // 두 번째 디자인 (오른쪽 상단)
                             ],
                           ),
                         ),
@@ -63,9 +64,9 @@ class SelectDesignPageState extends State<SelectDesignPage> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              buildDesignItem(2), // 세 번째 디자인 (왼쪽 하단)
+                              getDesign(context, 2), // 세 번째 디자인 (왼쪽 하단)
                               const SizedBox(width: 20.0),
-                              buildDesignItem(3), // 네 번째 디자인 (오른쪽 하단)
+                              getDesign(context, 3), // 네 번째 디자인 (오른쪽 하단)
                             ],
                           ),
                         ),
@@ -79,6 +80,20 @@ class SelectDesignPageState extends State<SelectDesignPage> {
         ),
       ),
       backgroundColor: Colors.white,
+    );
+  }
+
+  Widget getDesign(BuildContext context, int index) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CameraPage(index: index)),
+          );
+        },
+        child: buildDesignItem(index),
+      ),
     );
   }
 }

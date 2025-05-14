@@ -74,7 +74,6 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 상단 텍스트
               Row(
                 children: [
                   Expanded(
@@ -136,8 +135,8 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
                                 fit: BoxFit.cover,
                                 child: Image.asset(
                                   'assets/images/1.png',
-                                  width: 300, // 고정된 너비
-                                  height: 400, // 고정된 높이
+                                  width: 300,
+                                  height: 400,
                                 ),
                               ),
                             ),
@@ -171,7 +170,6 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
                 ),
               ),
               const SizedBox(height: 8),
-              // 다음 버튼
               Center(
                 child: GradientButton(
                   text: '다음으로 넘어가기',

@@ -8,39 +8,37 @@ Widget buildDesignItem(int index, [bool? useImage]) {
   bool useLogo = index == 2 || index == 3;
   Color frameColor = useImage ? Colors.transparent : Colors.black;
 
-  return Expanded(
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: frameColor, width: 15),
-              image:
-                  useImage
-                      ? const DecorationImage(
-                        image: AssetImage('assets/images/bg1.png'),
-                        fit: BoxFit.fitWidth,
-                      )
-                      : null,
-              color: useImage ? null : frameColor,
-            ),
-            child: _buildFrameContent(index, frameColor, useLogo),
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Flexible(
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: frameColor, width: 15),
+            image:
+                useImage
+                    ? const DecorationImage(
+                      image: AssetImage('assets/images/bg1.png'),
+                      fit: BoxFit.fitWidth,
+                    )
+                    : null,
+            color: useImage ? null : frameColor,
+          ),
+          child: _buildFrameContent(index, frameColor, useLogo),
+        ),
+      ),
+      const SizedBox(height: 8.0),
+      const FittedBox(
+        child: Text(
+          '기본 디자인',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16.0,
+            fontFamily: CustomFontFamily.dohyeon,
           ),
         ),
-        const SizedBox(height: 8.0),
-        const FittedBox(
-          child: Text(
-            '기본 디자인',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16.0,
-              fontFamily: CustomFontFamily.dohyeon,
-            ),
-          ),
-        ),
-      ],
-    ),
+      ),
+    ],
   );
 }
 

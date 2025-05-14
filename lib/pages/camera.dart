@@ -3,7 +3,9 @@ import 'package:commit4cut/style/font.dart';
 import 'dart:async';
 
 class CameraPage extends StatefulWidget {
-  const CameraPage({super.key});
+  const CameraPage({super.key, required this.index});
+
+  final int index;
 
   @override
   State<CameraPage> createState() => _CameraPageState();
@@ -14,23 +16,31 @@ class _CameraPageState extends State<CameraPage> {
   late Timer _timer;
   int _currentImageIndex = 1;
   final int _maxImages = 6;
+  late int _designIndex;
 
   @override
   void initState() {
     super.initState();
+    _designIndex = widget.index;
     _startCountdown();
   }
 
   void _startCountdown() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_countdown > 1) {
-          _countdown--;
-        } else {
-          _countdown = 10;
-          _currentImageIndex = _currentImageIndex < _maxImages ? _currentImageIndex + 1 : 1;
-        }
-      });
+      if (mounted) {
+        // 위젯이 마운트된 상태인지 확인
+        setState(() {
+          if (_countdown > 1) {
+            _countdown--;
+          } else {
+            _countdown = 10;
+            _currentImageIndex =
+                _currentImageIndex < _maxImages ? _currentImageIndex + 1 : 1;
+          }
+        });
+      } else {
+        _timer.cancel(); // 마운트되지 않은 상태라면 타이머 취소
+      }
     });
   }
 
@@ -44,6 +54,14 @@ class _CameraPageState extends State<CameraPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text('디자인 ${_designIndex + 1}'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Stack(
         children: [
           Container(
