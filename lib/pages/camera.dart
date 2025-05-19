@@ -84,7 +84,8 @@ class _CameraPageState extends State<CameraPage> {
               child: Text(
                 '카메라를 봐주세요!',
                 style: TextStyle(
-                  color: Colors.black,
+                  color: Colors.grey,
+
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   fontFamily: CustomFontFamily.dohyeon,
