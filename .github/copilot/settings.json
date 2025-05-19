@@ -1,0 +1,66 @@
+{
+  "languages": {
+    "dart": {
+      "enabled": true,
+      "suggestions": {
+        "enabled": true,
+        "codeCompletion": true,
+        "inlineCompletion": true
+      },
+      "preferences": {
+        "importStyle": "relative",
+        "useStatefulWidgets": true,
+        "lintRules": true,
+        "testFramework": "flutter_test"
+      }
+    },
+    "yaml": {
+      "enabled": true
+    },
+    "swift": {
+      "enabled": true
+    },
+    "kotlin": {
+      "enabled": true
+    }
+  },
+  "frameworks": ["flutter", "dart", "camera", "path_provider"],
+  "patterns": {
+    "pageStructure": {
+      "prefix": "page",
+      "body": [
+        "import 'package:flutter/material.dart';",
+        "import 'package:commit4cut/style/font.dart';",
+        "",
+        "class $1Page extends StatefulWidget {",
+        "  const $1Page({super.key});",
+        "",
+        "  @override",
+        "  State<$1Page> createState() => _$1PageState();",
+        "}",
+        "",
+        "class _$1PageState extends State<$1Page> {",
+        "  @override",
+        "  Widget build(BuildContext context) {",
+        "    return Scaffold(",
+        "      body: Container(",
+        "        child: Center(",
+        "          child: Text('$1 Page'),",
+        "        ),",
+        "      ),",
+        "    );",
+        "  }",
+        "}"
+      ]
+    }
+  },
+  "context": {
+    "codebase": {
+      "focus": ["lib/pages/*.dart", "lib/style/*.dart"]
+    },
+    "project": {
+      "name": "commit4cut",
+      "description": "사진 촬영 및 편집 앱"
+    }
+  }
+}
