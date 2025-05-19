@@ -1,8 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:commit4cut/style/font.dart';
 
-class LoadingPage extends StatelessWidget {
+class LoadingPage extends StatefulWidget {
   const LoadingPage({super.key});
+
+  @override
+  State<LoadingPage> createState() => _LoadingPageState();
+}
+
+class _LoadingPageState extends State<LoadingPage> {
+  int? _designIndex;
+  List<String>? _imagePaths;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    // 라우트 인자 받기
+    final Map<String, dynamic>? args = 
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    
+    if (args != null) {
+      _designIndex = args['designIndex'] as int?;
+      _imagePaths = args['imagePaths'] as List<String>?;
+      
+      print('받은 디자인 인덱스: $_designIndex');
+      print('받은 이미지 경로: $_imagePaths');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

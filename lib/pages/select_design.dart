@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:commit4cut/style/picture_design.dart';
 import 'package:commit4cut/style/font.dart';
-import 'package:commit4cut/pages/camera.dart';
+import 'package:commit4cut/pages/camera_test.dart';
 
 class SelectDesignPage extends StatefulWidget {
   const SelectDesignPage({super.key});
@@ -89,7 +89,7 @@ class SelectDesignPageState extends State<SelectDesignPage> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CameraPage(index: index)),
+            MaterialPageRoute(builder: (context) => CameraTestPage(designIndex: index)),
           );
         },
         child: buildDesignItem(index),

@@ -26,7 +26,7 @@ class Commit4cut extends StatelessWidget {
         '/': (context) => const StartPage(title: '컴공네컷'),
         '/select_picture': (context) => const SelectPicturePage(),
         '/loading': (context) => const LoadingPage(),
-        '/camera': (context) => const CameraPage(),
+        '/camera': (context) => const CameraPage(index: 0),
         '/camera_test': (context) => const CameraTestPage(),
       },
     );
