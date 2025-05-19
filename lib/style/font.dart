@@ -33,4 +33,5 @@ class CustomFontFamily {
   /// ```
   static const hsyuji = "HSYuji";
   static const dohyeon = "BMDOHYEON";
+  static const hanna = "BMHANNA";
 }

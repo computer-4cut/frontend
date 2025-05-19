@@ -3,7 +3,9 @@ import 'package:commit4cut/style/font.dart';
 import 'dart:async';
 
 class CameraPage extends StatefulWidget {
-  const CameraPage({super.key});
+  const CameraPage({super.key, required this.index});
+
+  final int index;
 
   @override
   State<CameraPage> createState() => _CameraPageState();
@@ -23,14 +25,20 @@ class _CameraPageState extends State<CameraPage> {
 
   void _startCountdown() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_countdown > 1) {
-          _countdown--;
-        } else {
-          _countdown = 10;
-          _currentImageIndex = _currentImageIndex < _maxImages ? _currentImageIndex + 1 : 1;
-        }
-      });
+      if (mounted) {
+        // 위젯이 마운트된 상태인지 확인
+        setState(() {
+          if (_countdown > 1) {
+            _countdown--;
+          } else {
+            _countdown = 10;
+            _currentImageIndex =
+                _currentImageIndex < _maxImages ? _currentImageIndex + 1 : 1;
+          }
+        });
+      } else {
+        _timer.cancel(); // 마운트되지 않은 상태라면 타이머 취소
+      }
     });
   }
 
@@ -55,21 +63,21 @@ class _CameraPageState extends State<CameraPage> {
               child: Container(
                 color: Colors.white,
                 margin: const EdgeInsets.all(10.0),
-                child: Center(
-                  child: Text(
-                    '$_countdown',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 120,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+              ),
+            ),
+          ),
+          Center(
+            child: Text(
+              '$_countdown',
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 120,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
           Positioned(
-            bottom: 20,
+            bottom: 40,
             left: 0,
             right: 0,
             child: Center(
@@ -77,6 +85,7 @@ class _CameraPageState extends State<CameraPage> {
                 '카메라를 봐주세요!',
                 style: TextStyle(
                   color: Colors.grey,
+
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   fontFamily: CustomFontFamily.dohyeon,
@@ -86,11 +95,11 @@ class _CameraPageState extends State<CameraPage> {
           ),
           Positioned(
             bottom: 50,
-            right: 20,
+            right: 50,
             child: Text(
               '$_currentImageIndex / $_maxImages',
               style: const TextStyle(
-                color: Colors.white,
+                color: Colors.black,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
