@@ -167,7 +167,7 @@ class SelectDesignPageState extends State<SelectDesignPage> {
       onTap: () {
         Navigator.pushNamed(
           context,
-          '/camera',
+          '/camera_test',
           arguments: {'designIndex': designIndex, 'cellIndex': cellIndex},
         );
       },
