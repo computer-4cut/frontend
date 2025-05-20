@@ -22,9 +22,9 @@ class CameraTestPage extends StatefulWidget {
 
 class _CameraTestPageState extends State<CameraTestPage> {
   int _countdown = 10;
-  late Timer _timer;
+  Timer? _timer;
   int _currentImageIndex = 1;
-  final int _maxImages = 4;
+  final int _maxImages = 6; // 6장의 사진을 찍도록 수정
   bool _isCounting = true;
   bool _isCapturing = false;
   String _captureStatus = "";
@@ -97,6 +97,15 @@ class _CameraTestPageState extends State<CameraTestPage> {
         // 카메라 컨트롤러 초기화 대기
         await _cameraController!.initialize();
         
+        // 카메라가 초기화된 후 추가 확인
+        if (_cameraController!.value.previewSize == null) {
+          print("경고: 카메라 프리뷰 크기가 null입니다!");
+          setState(() {
+            _captureStatus = "카메라 프리뷰를 불러올 수 없습니다.";
+          });
+          return;
+        }
+        
         if (mounted) {
           setState(() {
             _isCameraInitialized = true;
@@ -111,6 +120,7 @@ class _CameraTestPageState extends State<CameraTestPage> {
         });
       }
     } catch (e) {
+      print("카메라 초기화 오류: $e");
       setState(() {
         _captureStatus = "카메라 초기화 오류: $e";
       });
@@ -130,12 +140,14 @@ class _CameraTestPageState extends State<CameraTestPage> {
             }
           }
         });
+      } else {
+        timer.cancel(); // 마운트되지 않은 상태라면 타이머 취소
       }
     });
   }
 
   Future<void> _capturePhoto() async {
-    if (_cameraController == null || !_cameraController!.value.isInitialized) {
+    if (_cameraController == null || !_cameraController!.value.isInitialized || _cameraController!.value.previewSize == null) {
       setState(() {
         _captureStatus = "카메라가 준비되지 않았습니다.";
       });
@@ -216,7 +228,7 @@ class _CameraTestPageState extends State<CameraTestPage> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     _cameraController?.dispose();
     super.dispose();
   }
@@ -276,7 +288,7 @@ class _CameraTestPageState extends State<CameraTestPage> {
       body: Stack(
         children: [
           // 카메라 미리보기
-          if (_isCameraInitialized && _cameraController != null)
+          if (_isCameraInitialized && _cameraController != null && _cameraController!.value.previewSize != null)
             SizedBox.expand(
               child: FittedBox(
                 fit: BoxFit.cover,

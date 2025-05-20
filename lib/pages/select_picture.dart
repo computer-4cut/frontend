@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:commit4cut/style/font.dart';
 import 'package:commit4cut/util.dart';
+import 'dart:io';
 
 class SelectPicturePage extends StatefulWidget {
   const SelectPicturePage({super.key});
@@ -10,8 +11,35 @@ class SelectPicturePage extends StatefulWidget {
 }
 
 class _SelectPicturePageState extends State<SelectPicturePage> {
+  // 6장의 사진 중 선택 상태를 저장하는 리스트
   final List<bool> _selectedPictures = List.generate(6, (index) => false);
   int _selectedCount = 0;
+  int? _designIndex;
+  int? _cellIndex;
+  List<String>? _photosPaths;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    // 라우트 인자 받기
+    final Map<String, dynamic>? args = 
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    
+    if (args != null) {
+      _designIndex = args['designIndex'] as int?;
+      _cellIndex = args['cellIndex'] as int?;
+      _photosPaths = args['photosPaths'] as List<String>?;
+      
+      if (_photosPaths == null || _photosPaths!.isEmpty) {
+        print('경고: 사진 경로가 없거나 비어 있습니다!');
+      } else {
+        print('받은 디자인 인덱스: $_designIndex');
+        print('받은 셀 인덱스: $_cellIndex');
+        print('받은 사진 경로 개수: ${_photosPaths!.length}');
+      }
+    }
+  }
 
   void _togglePicture(int index) {
     if (_selectedPictures[index]) {
@@ -131,14 +159,15 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(8),
-                              child: FittedBox(
-                                fit: BoxFit.cover,
-                                child: Image.asset(
-                                  'assets/images/1.png',
-                                  width: 300,
-                                  height: 400,
-                                ),
-                              ),
+                              child: _photosPaths != null && index < _photosPaths!.length
+                                ? Image.file(
+                                    File(_photosPaths![index]),
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.asset(
+                                    'assets/images/1.png',
+                                    fit: BoxFit.cover,
+                                  ),
                             ),
                           ),
                           if (_selectedPictures[index])
@@ -175,7 +204,22 @@ class _SelectPicturePageState extends State<SelectPicturePage> {
                   text: '다음으로 넘어가기',
                   onPressed: () {
                     if (_selectedCount == 4) {
-                      Navigator.pushNamed(context, '/loading');
+                      // 선택된 사진들의 경로만 추출
+                      List<String> selectedPhotos = [];
+                      for (int i = 0; i < _selectedPictures.length; i++) {
+                        if (_selectedPictures[i] && _photosPaths != null && i < _photosPaths!.length) {
+                          selectedPhotos.add(_photosPaths![i]);
+                        }
+                      }
+                      // 로딩 페이지로 이동하면서 선택된 사진과 디자인 인덱스 전달
+                      Navigator.pushNamed(
+                        context, 
+                        '/loading',
+                        arguments: {
+                          'designIndex': _designIndex ?? 0,
+                          'imagePaths': selectedPhotos,
+                        },
+                      );
                     } else {
                       _showWarningDialog();
                     }

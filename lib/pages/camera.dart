@@ -22,7 +22,7 @@ class CameraPage extends StatefulWidget {
 
 class _CameraPageState extends State<CameraPage> {
   int _countdown = 10;
-  late Timer _timer;
+  Timer? _timer;
   int _currentImageIndex = 1;
   final int _maxImages = 4;
   bool _isCounting = true;
@@ -130,7 +130,7 @@ class _CameraPageState extends State<CameraPage> {
           }
         });
       } else {
-        _timer.cancel(); // 마운트되지 않은 상태라면 타이머 취소
+        timer.cancel(); // 마운트되지 않은 상태라면 타이머 취소
       }
     });
   }
