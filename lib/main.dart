@@ -4,6 +4,7 @@ import 'package:commit4cut/pages/select_picture.dart';
 import 'package:commit4cut/pages/loading.dart';
 import 'package:commit4cut/pages/camera.dart';
 import 'package:commit4cut/pages/camera_test.dart';
+import 'package:commit4cut/pages/result.dart';
 
 void main() {
   runApp(const Commit4cut());
@@ -28,6 +29,7 @@ class Commit4cut extends StatelessWidget {
         '/loading': (context) => const LoadingPage(),
         '/camera': (context) => const CameraPage(index: 0),
         '/camera_test': (context) => const CameraTestPage(),
+        '/result': (context) => const ResultPage(),
       },
     );
   }

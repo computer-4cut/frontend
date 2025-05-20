@@ -13,6 +13,29 @@ class _LoadingPageState extends State<LoadingPage> {
   List<String>? _imagePaths;
 
   @override
+  void initState() {
+    super.initState();
+    // 페이지 로딩 후 2초 후에 결과 페이지로 이동
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        _navigateToResultPage();
+      }
+    });
+  }
+  
+  void _navigateToResultPage() {
+    // 결과 페이지로 이동하면서 데이터 전달
+    Navigator.pushReplacementNamed(
+      context,
+      '/result',
+      arguments: {
+        'designIndex': _designIndex,
+        'imagePaths': _imagePaths,
+      },
+    );
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     
