@@ -5,7 +5,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:commit4cut/style/font.dart';
 
-Widget buildDesignItem(int index, [bool? useImage, bool? usePhoto]) {
+Widget buildDesignItem(
+  int index, [
+  bool? useImage,
+  bool? usePhoto,
+  List<String>? imagePaths,
+]) {
   useImage ??= index % 2 != 0;
   usePhoto ??= false;
   bool useLogo = index == 2 || index == 3;
@@ -27,7 +32,13 @@ Widget buildDesignItem(int index, [bool? useImage, bool? usePhoto]) {
                     : null,
             color: useImage ? null : frameColor,
           ),
-          child: _buildFrameContent(index, frameColor, useLogo, usePhoto),
+          child: _buildFrameContent(
+            index,
+            frameColor,
+            useLogo,
+            usePhoto,
+            imagePaths,
+          ),
         ),
       ),
       const SizedBox(height: 8.0),
@@ -49,11 +60,15 @@ Widget _buildFrameContent(
   int index,
   Color frameColor,
   bool useLogo,
-  bool usePhoto,
-) {
+  bool usePhoto, [
+  List<String>? imagePaths,
+]) {
   return Column(
     children: [
-      Expanded(flex: 9, child: _buildCustomGrid(2, 2, useLogo, usePhoto)),
+      Expanded(
+        flex: 9,
+        child: _buildCustomGrid(2, 2, useLogo, usePhoto, imagePaths),
+      ),
       if (!useLogo)
         Container(
           height: 40.0, // 전체 Row 높이 증가

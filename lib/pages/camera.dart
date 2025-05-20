@@ -216,7 +216,7 @@ class _CameraPageState extends State<CameraPage> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     _cameraController?.dispose();
     super.dispose();
   }
