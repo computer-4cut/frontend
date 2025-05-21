@@ -21,13 +21,15 @@ Widget buildDesignItem(
     children: [
       Flexible(
         child: Container(
+          width: 300,
+          height: 400,
           decoration: BoxDecoration(
-            border: Border.all(color: frameColor, width: 15),
+            border: Border.all(color: frameColor, width: 10),
             image:
                 useImage
                     ? const DecorationImage(
                       image: AssetImage('assets/images/bg1.png'),
-                      fit: BoxFit.fitWidth,
+                      fit: BoxFit.cover,
                     )
                     : null,
             color: useImage ? null : frameColor,
@@ -38,14 +40,15 @@ Widget buildDesignItem(
             useLogo,
             usePhoto,
             imagePaths,
+            useImage,
           ),
         ),
       ),
       const SizedBox(height: 8.0),
-      const FittedBox(
+      FittedBox(
         child: Text(
-          '기본 디자인',
-          style: TextStyle(
+          '디자인 ${index + 1}',
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16.0,
             fontFamily: CustomFontFamily.dohyeon,
@@ -62,22 +65,23 @@ Widget _buildFrameContent(
   bool useLogo,
   bool usePhoto, [
   List<String>? imagePaths,
+  bool? useImage,
 ]) {
   return Column(
     children: [
       Expanded(
         flex: 9,
-        child: _buildCustomGrid(2, 2, useLogo, usePhoto, imagePaths),
+        child: _buildCustomGrid(2, 2, useLogo, usePhoto, imagePaths, useImage),
       ),
       if (!useLogo)
         Container(
-          height: 40.0, // 전체 Row 높이 증가
+          height: 40.0,
           decoration: BoxDecoration(color: frameColor),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center, // 중앙 정렬로 변경
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                height: 40.0, // Match the parent container height
+                height: 40.0,
                 alignment: Alignment.center,
                 child: FittedBox(
                   fit: BoxFit.fill,
@@ -86,7 +90,7 @@ Widget _buildFrameContent(
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w400,
-                      fontSize: 30.0,
+                      fontSize: 20.0,
                       fontFamily: CustomFontFamily.hanna,
                     ),
                   ),
@@ -113,15 +117,15 @@ Widget _buildCustomGrid(
   bool useLogo,
   bool usePhoto, [
   List<String>? imagePaths,
+  bool? useImage,
 ]) {
   if (usePhoto && imagePaths == null) {
     throw ErrorHint("이미지 경로가 주어져야 하는데, null이 주어졌습니다.");
   }
+
   if (useLogo) {
-    // 두 번째 이미지처럼 비대칭 레이아웃 생성
     return Row(
       children: [
-        // 왼쪽 세로로 큰 셀들 (2개 + 텍스트)
         Expanded(
           flex: 1,
           child: Column(
@@ -130,41 +134,38 @@ Widget _buildCustomGrid(
                 flex: 1,
                 child:
                     usePhoto
-                        ? _buildPhotoCell(0, imagePaths!)
-                        : _buildWhiteCell(),
+                        ? _buildPhotoCell(0, imagePaths!, useImage)
+                        : _buildWhiteCell(useImage),
               ),
               Expanded(
                 flex: 1,
                 child:
                     usePhoto
-                        ? _buildPhotoCell(2, imagePaths!)
-                        : _buildWhiteCell(),
+                        ? _buildPhotoCell(2, imagePaths!, useImage)
+                        : _buildWhiteCell(useImage),
               ),
-              _buildTextCell(), // 고정 크기
+              _buildTextCell(),
             ],
           ),
         ),
-        // 오른쪽 영역
         Expanded(
           flex: 1,
           child: Column(
             children: [
-              // 로고 (상단) - 고정 크기
               _buildLogoCell(),
-              // 중간 영역 - 나머지 공간 채움
               Expanded(
                 flex: 1,
                 child:
                     usePhoto
-                        ? _buildPhotoCell(1, imagePaths!)
-                        : _buildWhiteCell(),
+                        ? _buildPhotoCell(1, imagePaths!, useImage)
+                        : _buildWhiteCell(useImage),
               ),
               Expanded(
                 flex: 1,
                 child:
                     usePhoto
-                        ? _buildPhotoCell(3, imagePaths!)
-                        : _buildWhiteCell(),
+                        ? _buildPhotoCell(3, imagePaths!, useImage)
+                        : _buildWhiteCell(useImage),
               ),
             ],
           ),
@@ -172,7 +173,6 @@ Widget _buildCustomGrid(
       ],
     );
   } else {
-    // 기본 그리드 레이아웃
     return Column(
       children: List.generate(rows, (rowIndex) {
         return Expanded(
@@ -181,8 +181,12 @@ Widget _buildCustomGrid(
               return Expanded(
                 child:
                     usePhoto
-                        ? _buildPhotoCell(colIndex, imagePaths!)
-                        : _buildWhiteCell(),
+                        ? _buildPhotoCell(
+                          rowIndex * columns + colIndex,
+                          imagePaths!,
+                          useImage,
+                        )
+                        : _buildWhiteCell(useImage),
               );
             }),
           ),
@@ -192,14 +196,29 @@ Widget _buildCustomGrid(
   }
 }
 
-Widget _buildWhiteCell() {
-  return Container(margin: const EdgeInsets.all(5.0), color: Colors.white);
+Widget _buildWhiteCell([bool? useImage]) {
+  return Container(
+    margin: const EdgeInsets.all(3.0),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      border:
+          useImage == true
+              ? Border.all(color: const Color(0xCC1B1912), width: 1)
+              : null,
+    ),
+  );
 }
 
-Widget _buildPhotoCell(int index, List<String> imagePaths) {
+Widget _buildPhotoCell(int index, List<String> imagePaths, [bool? useImage]) {
   return Container(
-    margin: const EdgeInsets.all(5.0),
-    color: Colors.transparent,
+    margin: const EdgeInsets.all(3.0),
+    decoration: BoxDecoration(
+      color: Colors.transparent,
+      border:
+          useImage == true
+              ? Border.all(color: const Color(0xCC1B1912), width: 5.0)
+              : null,
+    ),
     child:
         index < imagePaths.length
             ? Image.file(File(imagePaths[index]), fit: BoxFit.cover)
@@ -217,16 +236,15 @@ Widget _buildLogoCell() {
 }
 
 Widget _buildTextCell() {
-  Color textColor = Colors.white;
   return Container(
     height: 35,
     color: Colors.transparent,
     margin: const EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
-    child: Center(
+    child: const Center(
       child: Text(
         '컴공네컷',
         style: TextStyle(
-          color: textColor,
+          color: Colors.white,
           fontWeight: FontWeight.w400,
           fontSize: 20.0,
           fontFamily: CustomFontFamily.hanna,
