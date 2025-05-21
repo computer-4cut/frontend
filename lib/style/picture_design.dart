@@ -1,10 +1,18 @@
 library;
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:commit4cut/style/font.dart';
 
-Widget buildDesignItem(int index, [bool? useImage]) {
+Widget buildDesignItem(
+  int index, [
+  bool? useImage,
+  bool? usePhoto,
+  List<String>? imagePaths,
+]) {
   useImage ??= index % 2 != 0;
+  usePhoto ??= false;
   bool useLogo = index == 2 || index == 3;
   Color frameColor = useImage ? Colors.transparent : Colors.black;
 
@@ -24,7 +32,13 @@ Widget buildDesignItem(int index, [bool? useImage]) {
                     : null,
             color: useImage ? null : frameColor,
           ),
-          child: _buildFrameContent(index, frameColor, useLogo),
+          child: _buildFrameContent(
+            index,
+            frameColor,
+            useLogo,
+            usePhoto,
+            imagePaths,
+          ),
         ),
       ),
       const SizedBox(height: 8.0),
@@ -42,10 +56,19 @@ Widget buildDesignItem(int index, [bool? useImage]) {
   );
 }
 
-Widget _buildFrameContent(int index, Color frameColor, bool useLogo) {
+Widget _buildFrameContent(
+  int index,
+  Color frameColor,
+  bool useLogo,
+  bool usePhoto, [
+  List<String>? imagePaths,
+]) {
   return Column(
     children: [
-      Expanded(flex: 9, child: _buildCustomGrid(2, 2, useLogo)),
+      Expanded(
+        flex: 9,
+        child: _buildCustomGrid(2, 2, useLogo, usePhoto, imagePaths),
+      ),
       if (!useLogo)
         Container(
           height: 40.0, // 전체 Row 높이 증가
@@ -84,7 +107,16 @@ Widget _buildFrameContent(int index, Color frameColor, bool useLogo) {
   );
 }
 
-Widget _buildCustomGrid(int rows, int columns, bool useLogo) {
+Widget _buildCustomGrid(
+  int rows,
+  int columns,
+  bool useLogo,
+  bool usePhoto, [
+  List<String>? imagePaths,
+]) {
+  if (usePhoto && imagePaths == null) {
+    throw ErrorHint("이미지 경로가 주어져야 하는데, null이 주어졌습니다.");
+  }
   if (useLogo) {
     // 두 번째 이미지처럼 비대칭 레이아웃 생성
     return Row(
@@ -95,12 +127,18 @@ Widget _buildCustomGrid(int rows, int columns, bool useLogo) {
           child: Column(
             children: [
               Expanded(
-                flex: 1, // 동일한 flex 값 설정
-                child: _buildWhiteCell(),
+                flex: 1,
+                child:
+                    usePhoto
+                        ? _buildPhotoCell(0, imagePaths!)
+                        : _buildWhiteCell(),
               ),
               Expanded(
-                flex: 1, // 동일한 flex 값 설정
-                child: _buildWhiteCell(),
+                flex: 1,
+                child:
+                    usePhoto
+                        ? _buildPhotoCell(2, imagePaths!)
+                        : _buildWhiteCell(),
               ),
               _buildTextCell(), // 고정 크기
             ],
@@ -115,12 +153,18 @@ Widget _buildCustomGrid(int rows, int columns, bool useLogo) {
               _buildLogoCell(),
               // 중간 영역 - 나머지 공간 채움
               Expanded(
-                flex: 1, // 동일한 flex 값 설정
-                child: _buildWhiteCell(),
+                flex: 1,
+                child:
+                    usePhoto
+                        ? _buildPhotoCell(1, imagePaths!)
+                        : _buildWhiteCell(),
               ),
               Expanded(
-                flex: 1, // 동일한 flex 값 설정
-                child: _buildWhiteCell(),
+                flex: 1,
+                child:
+                    usePhoto
+                        ? _buildPhotoCell(3, imagePaths!)
+                        : _buildWhiteCell(),
               ),
             ],
           ),
@@ -134,7 +178,12 @@ Widget _buildCustomGrid(int rows, int columns, bool useLogo) {
         return Expanded(
           child: Row(
             children: List.generate(columns, (colIndex) {
-              return Expanded(child: _buildWhiteCell());
+              return Expanded(
+                child:
+                    usePhoto
+                        ? _buildPhotoCell(colIndex, imagePaths!)
+                        : _buildWhiteCell(),
+              );
             }),
           ),
         );
@@ -145,6 +194,17 @@ Widget _buildCustomGrid(int rows, int columns, bool useLogo) {
 
 Widget _buildWhiteCell() {
   return Container(margin: const EdgeInsets.all(5.0), color: Colors.white);
+}
+
+Widget _buildPhotoCell(int index, List<String> imagePaths) {
+  return Container(
+    margin: const EdgeInsets.all(5.0),
+    color: Colors.transparent,
+    child:
+        index < imagePaths.length
+            ? Image.file(File(imagePaths[index]), fit: BoxFit.cover)
+            : Container(color: Colors.grey.shade200),
+  );
 }
 
 Widget _buildLogoCell() {

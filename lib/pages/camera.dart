@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:commit4cut/style/font.dart';
 import 'dart:async';
 
+
+/// CameraPage 위젯
+///
+/// 사용자가 4장의 사진을 연속으로 촬영하는 화면
+/// @copilot-context 이 화면은 선택한 디자인 인덱스를 전달받아 사진 촬영 후 저장합니다
+/// @copilot-platform-support 주로 모바일 플랫폼(iOS, Android)을 지원합니다
 class CameraPage extends StatefulWidget {
   const CameraPage({super.key, required this.index});
 
@@ -45,6 +51,7 @@ class _CameraPageState extends State<CameraPage> {
   @override
   void dispose() {
     _timer?.cancel();
+    _cameraController?.dispose();
     super.dispose();
   }
 

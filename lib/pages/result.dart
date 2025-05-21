@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:commit4cut/style/font.dart';
 import 'package:commit4cut/util.dart';
-import 'dart:io';
-import 'dart:typed_data';
+import 'package:commit4cut/style/picture_design.dart';
 import 'dart:ui' as ui;
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as path;
+// import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/rendering.dart';
+// import 'package:path_provider/path_provider.dart';
+// import 'package:http/http.dart' as http;
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 class ResultPage extends StatefulWidget {
   const ResultPage({super.key});
@@ -17,22 +20,22 @@ class ResultPage extends StatefulWidget {
 class _ResultPageState extends State<ResultPage> {
   int? _designIndex;
   List<String>? _imagePaths;
-  GlobalKey _photoCardKey = GlobalKey();
+  final GlobalKey _photoCardKey = GlobalKey();
   bool _isSaving = false;
   String _saveMessage = '';
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     // 라우트 인자 받기
-    final Map<String, dynamic>? args = 
+    final Map<String, dynamic>? args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    
+
     if (args != null) {
       _designIndex = args['designIndex'] as int?;
       _imagePaths = args['imagePaths'] as List<String>?;
-      
+
       print('결과 페이지 - 받은 디자인 인덱스: $_designIndex');
       if (_imagePaths != null) {
         print('결과 페이지 - 받은 이미지 경로 수: ${_imagePaths!.length}');
@@ -43,291 +46,17 @@ class _ResultPageState extends State<ResultPage> {
   // 디자인 인덱스에 따른 디자인 위젯 반환
   Widget _buildPhotoCard() {
     int designIndex = _designIndex ?? 0;
-    
-    // 디자인 템플릿에 따라 다른 레이아웃 반환
-    switch (designIndex) {
-      case 0:
-        return _buildBasicDesign();
-      case 1:
-        return _buildDesignWithBackground();
-      case 2:
-        return _buildDesignWithLogo();
-      case 3:
-        return _buildDesignWithLogoAndBackground();
-      default:
-        return _buildBasicDesign();
-    }
-  }
 
-  // 기본 디자인 (2x2 그리드)
-  Widget _buildBasicDesign() {
-    return Container(
-      width: 350,
-      height: 500,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black, width: 15),
-        color: Colors.white,
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: Column(
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(child: _buildPhotoCell(0)),
-                      Expanded(child: _buildPhotoCell(1)),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(child: _buildPhotoCell(2)),
-                      Expanded(child: _buildPhotoCell(3)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            height: 40.0,
-            color: Colors.black,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '컴공네컷',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 20.0,
-                    fontFamily: CustomFontFamily.hanna,
-                  ),
-                ),
-                const SizedBox(width: 20.0),
-                SizedBox(
-                  height: 30.0,
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                    fit: BoxFit.contain,
-                  ) ,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+    // picture_design.dart의 buildDesignItem을 사용하여 디자인 생성
+    Widget designWidget = buildDesignItem(
+      designIndex,
+      designIndex % 2 != 0, // 1, 3번 디자인은 배경 이미지 사용
+      _imagePaths != null, // 이미지 경로가 있으면 사진 표시
+      _imagePaths, // 이미지 경로 전달
     );
-  }
 
-  // 배경이 있는 디자인
-  Widget _buildDesignWithBackground() {
-    return Container(
-      width: 350,
-      height: 500,
-      decoration: BoxDecoration(
-        image: const DecorationImage(
-          image: AssetImage('assets/images/bg1.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Expanded(child: _buildPhotoCell(0)),
-                        SizedBox(width: 8),
-                        Expanded(child: _buildPhotoCell(1)),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Expanded(child: _buildPhotoCell(2)),
-                        SizedBox(width: 8),
-                        Expanded(child: _buildPhotoCell(3)),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // 하단 텍스트와 로고 - 반투명 배경
-          Container(
-            height: 40.0,
-            color: Colors.black.withOpacity(0.7), // 투명도 추가
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '컴공네컷',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 20.0,
-                    fontFamily: CustomFontFamily.hanna,
-                  ),
-                ),
-                const SizedBox(width: 20.0),
-                SizedBox(
-                  height: 30.0,
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // 로고가 있는 디자인
-  Widget _buildDesignWithLogo() {
-    return Container(
-      width: 350,
-      height: 500,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black, width: 15),
-        color: Colors.white,
-      ),
-      child: Row(
-        children: [
-          // 왼쪽 세로 영역
-          Expanded(
-            flex: 1,
-            child: Column(
-              children: [
-                Expanded(flex: 1, child: _buildPhotoCell(0)),
-                Expanded(flex: 1, child: _buildPhotoCell(1)),
-                Container(
-                  height: 35,
-                  color: Colors.black,
-                  child: Center(
-                    child: Text(
-                      '컴공네컷',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 15.0,
-                        fontFamily: CustomFontFamily.hanna,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // 오른쪽 세로 영역
-          Expanded(
-            flex: 1,
-            child: Column(
-              children: [
-                Container(
-                  height: 40,
-                  margin: const EdgeInsets.all(5.0),
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                Expanded(flex: 1, child: _buildPhotoCell(2)),
-                Expanded(flex: 1, child: _buildPhotoCell(3)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // 로고와 배경이 있는 디자인
-  Widget _buildDesignWithLogoAndBackground() {
-    return Container(
-      width: 350,
-      height: 500,
-      decoration: BoxDecoration(
-        image: const DecorationImage(
-          image: AssetImage('assets/images/bg1.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Row(
-        children: [
-          // 왼쪽 세로 영역
-          Expanded(
-            flex: 1,
-            child: Column(
-              children: [
-                Expanded(flex: 1, child: _buildPhotoCell(0)),
-                Expanded(flex: 1, child: _buildPhotoCell(1)),
-                Container(
-                  height: 35,
-                  color: Colors.black.withOpacity(0.7), // 투명도 추가
-                  child: Center(
-                    child: Text(
-                      '컴공네컷',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 15.0,
-                        fontFamily: CustomFontFamily.hanna,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // 오른쪽 세로 영역
-          Expanded(
-            flex: 1,
-            child: Column(
-              children: [
-                Container(
-                  height: 40,
-                  margin: const EdgeInsets.all(5.0),
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                Expanded(flex: 1, child: _buildPhotoCell(2)),
-                Expanded(flex: 1, child: _buildPhotoCell(3)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // 개별 사진 셀
-  Widget _buildPhotoCell(int index) {
-    return Container(
-      margin: const EdgeInsets.all(5.0),
-      color: Colors.white,
-      child: _imagePaths != null && index < _imagePaths!.length
-          ? Image.file(
-              File(_imagePaths![index]),
-              fit: BoxFit.cover,
-            )
-          : Container(color: Colors.grey.shade200),
-    );
+    // 크기 및 비율 조정을 위해 Container로 감싸기
+    return SizedBox(width: 350, height: 500, child: designWidget);
   }
 
   @override
@@ -351,10 +80,7 @@ class _ResultPageState extends State<ResultPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // 사진 합성 결과
-            RepaintBoundary(
-              key: _photoCardKey,
-              child: _buildPhotoCard(),
-            ),
+            RepaintBoundary(key: _photoCardKey, child: _buildPhotoCard()),
             const SizedBox(height: 20),
             // 저장 버튼
             GradientButton(
@@ -372,7 +98,8 @@ class _ResultPageState extends State<ResultPage> {
                   style: TextStyle(
                     fontFamily: CustomFontFamily.dohyeon,
                     fontSize: 16,
-                    color: _saveMessage.contains('성공') ? Colors.green : Colors.red,
+                    color:
+                        _saveMessage.contains('성공') ? Colors.green : Colors.red,
                   ),
                 ),
               ),
@@ -396,7 +123,7 @@ class _ResultPageState extends State<ResultPage> {
     );
   }
 
-  // 이미지 저장 기능 (미구현)
+  // 이미지 저장 기능
   void _saveImage() async {
     setState(() {
       _isSaving = true;
@@ -404,13 +131,39 @@ class _ResultPageState extends State<ResultPage> {
     });
 
     try {
-      // 실제 프로젝트에서는 RepaintBoundary를 이미지로 캡쳐하고 저장하는 코드를 구현해야 합니다.
-      // 이 예제에서는 간단히 성공 메시지만 표시합니다.
-      await Future.delayed(Duration(seconds: 2)); // 저장 시간 시뮬레이션
-      
-      setState(() {
-        _saveMessage = '저장 성공! 갤러리에서 확인하세요.';
-      });
+      // RepaintBoundary를 이미지로 캡쳐
+      RenderRepaintBoundary boundary =
+          _photoCardKey.currentContext!.findRenderObject()
+              as RenderRepaintBoundary;
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+      ByteData? byteData = await image.toByteData(
+        format: ui.ImageByteFormat.png,
+      );
+
+      if (byteData != null) {
+        Uint8List pngBytes = byteData.buffer.asUint8List();
+
+        // 갤러리에 저장
+        final result = await ImageGallerySaver.saveImage(
+          pngBytes,
+          quality: 100,
+          name: 'commit4cut_${DateTime.now().millisecondsSinceEpoch}.png',
+        );
+
+        if (result['isSuccess']) {
+          setState(() {
+            _saveMessage = '저장 성공! 갤러리에서 확인하세요.';
+          });
+        } else {
+          setState(() {
+            _saveMessage = '저장 실패: 권한을 확인해주세요.';
+          });
+        }
+      } else {
+        setState(() {
+          _saveMessage = '저장 실패: 이미지 변환 오류';
+        });
+      }
     } catch (e) {
       setState(() {
         _saveMessage = '저장 실패: $e';
