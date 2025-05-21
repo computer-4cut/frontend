@@ -216,7 +216,7 @@ Widget _buildPhotoCell(int index, List<String> imagePaths, [bool? useImage]) {
       color: Colors.transparent,
       border:
           useImage == true
-              ? Border.all(color: const Color(0xCC1B1912), width: 5.0)
+              ? Border.all(color: const Color(0xCC1B1912), width: 1.0)
               : null,
     ),
     child:
