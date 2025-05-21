@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:commit4cut/style/font.dart';
 
-class LoadingPage extends StatelessWidget {
-  const LoadingPage({
-    super.key,
-    required this.designIndex,
-    required this.imagePath,
-  });
-
-  final int designIndex;
-  final List<String> imagePath;
+class LoadingPage extends StatefulWidget {
+  const LoadingPage({super.key});
 
   @override
   State<LoadingPage> createState() => _LoadingPageState();
