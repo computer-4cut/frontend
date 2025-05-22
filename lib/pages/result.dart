@@ -68,10 +68,10 @@ class _ResultPageState extends State<ResultPage> {
     Color frameColor = useImage ? Colors.transparent : Colors.black;
 
     return Container(
-      width: 600, // 저장용 고해상도 크기
-      height: 800, // 저장용 고해상도 크기  
+      width: 328, // 정확한 비율: 1640/5.0 = 328
+      height: 472, // 정확한 비율: 2360/5.0 = 472
       decoration: BoxDecoration(
-        border: Border.all(color: frameColor, width: 40), // 프레임 두께도 비례 증가
+        border: Border.all(color: frameColor, width: 20), // 테두리 더 넓게 (10 -> 35)
         image: useImage
             ? const DecorationImage(
                 image: AssetImage('assets/images/bg1.png'),
@@ -94,13 +94,13 @@ class _ResultPageState extends State<ResultPage> {
         ),
         if (!useLogo)
           Container(
-            height: 80.0, // 고해상도에 맞게 크기 증가
+            height: 28.0, // 테두리가 커진 만큼 조정
             decoration: BoxDecoration(color: frameColor),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  height: 80.0,
+                  height: 28.0,
                   alignment: Alignment.center,
                   child: Stack(
                     children: [
@@ -112,28 +112,28 @@ class _ResultPageState extends State<ResultPage> {
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w400,
-                            fontSize: 40.0, // 고해상도에 맞게 크기 증가
+                            fontSize: 15.0, // 테두리가 커진 만큼 조정
                             fontFamily: CustomFontFamily.hanna,
                             shadows: [
                               Shadow(
-                                offset: const Offset(-2, -2),
+                                offset: const Offset(-0.8, -0.8),
                                 color: Colors.black,
-                                blurRadius: 2,
+                                blurRadius: 0.8,
                               ),
                               Shadow(
-                                offset: const Offset(2, -2),
+                                offset: const Offset(0.8, -0.8),
                                 color: Colors.black,
-                                blurRadius: 2,
+                                blurRadius: 0.8,
                               ),
                               Shadow(
-                                offset: const Offset(-2, 2),
+                                offset: const Offset(-0.8, 0.8),
                                 color: Colors.black,
-                                blurRadius: 2,
+                                blurRadius: 0.8,
                               ),
                               Shadow(
-                                offset: const Offset(2, 2),
+                                offset: const Offset(0.8, 0.8),
                                 color: Colors.black,
-                                blurRadius: 2,
+                                blurRadius: 0.8,
                               ),
                             ],
                           ),
@@ -147,7 +147,7 @@ class _ResultPageState extends State<ResultPage> {
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w400,
-                            fontSize: 40.0, // 고해상도에 맞게 크기 증가
+                            fontSize: 15.0, // 테두리가 커진 만큼 조정
                             fontFamily: CustomFontFamily.hanna,
                           ),
                         ),
@@ -155,9 +155,9 @@ class _ResultPageState extends State<ResultPage> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 110.0), // 고해상도에 맞게 크기 증가
+                const SizedBox(width: 40.0), // 테두리가 커진 만큼 조정
                 SizedBox(
-                  height: 120.0, // 고해상도에 맞게 크기 증가
+                  height: 42.0, // 테두리가 커진 만큼 조정
                   child: Image.asset(
                     'assets/images/logo.png',
                     fit: BoxFit.contain,
@@ -231,11 +231,11 @@ class _ResultPageState extends State<ResultPage> {
   // 저장용 사진 셀
   Widget _buildPhotoForSave(int index, bool useImage) {
     return Container(
-      margin: const EdgeInsets.all(6.0), // 고해상도에 맞게 크기 증가
+      margin: const EdgeInsets.all(2.0), // 여백 더 줄임
       decoration: BoxDecoration(
         color: Colors.transparent,
         border: useImage
-            ? Border.all(color: const Color(0xCC1B1912), width: 2.0) // 고해상도에 맞게 크기 증가
+            ? Border.all(color: const Color(0xCC1B1912), width: 0.8) // 테두리 더 얇게
             : null,
       ),
       child: ClipRect(
@@ -251,7 +251,7 @@ class _ResultPageState extends State<ResultPage> {
                 child: useImage
                     ? Container(
                         decoration: BoxDecoration(
-                          border: Border.all(color: const Color(0xCC1B1912), width: 1),
+                          border: Border.all(color: const Color(0xCC1B1912), width: 0.8),
                         ),
                       )
                     : null,
@@ -263,19 +263,18 @@ class _ResultPageState extends State<ResultPage> {
   // 저장용 로고 셀
   Widget _buildLogoCellForSave() {
     return Container(
-      margin: const EdgeInsets.only(left: 10.0, right: 10.0), // 고해상도에 맞게 크기 증가
+      margin: const EdgeInsets.only(left: 3.0, right: 3.0), // 여백 조정
       color: Colors.transparent,
-      height: 80, // 고해상도에 맞게 크기 증가
+      height: 50, // 테두리가 커진 만큼 조정
       child: Image.asset('assets/images/logo.png', fit: BoxFit.contain),
     );
   }
-
   // 저장용 텍스트 셀
   Widget _buildTextCellForSave() {
     return Container(
-      height: 70, // 고해상도에 맞게 크기 증가
+      height: 26, // 테두리가 커진 만큼 조정
       color: Colors.transparent,
-      margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0), // 고해상도에 맞게 크기 증가
+      margin: const EdgeInsets.only(top: 3.0, left: 3.0, right: 3.0), // 여백 조정
       child: Stack(
         children: [
           // Stroke effect
@@ -285,28 +284,28 @@ class _ResultPageState extends State<ResultPage> {
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.w400,
-                fontSize: 40.0, // 고해상도에 맞게 크기 증가
+                fontSize: 15.0, // 테두리가 커진 만큼 조정
                 fontFamily: CustomFontFamily.hanna,
                 shadows: [
                   Shadow(
-                    offset: const Offset(-2, -2),
+                    offset: const Offset(-0.8, -0.8),
                     color: Colors.black,
-                    blurRadius: 2,
+                    blurRadius: 0.8,
                   ),
                   Shadow(
-                    offset: const Offset(2, -2),
+                    offset: const Offset(0.8, -0.8),
                     color: Colors.black,
-                    blurRadius: 2,
+                    blurRadius: 0.8,
                   ),
                   Shadow(
-                    offset: const Offset(-2, 2),
+                    offset: const Offset(-0.8, 0.8),
                     color: Colors.black,
-                    blurRadius: 2,
+                    blurRadius: 0.8,
                   ),
                   Shadow(
-                    offset: const Offset(2, 2),
+                    offset: const Offset(0.8, 0.8),
                     color: Colors.black,
-                    blurRadius: 2,
+                    blurRadius: 0.8,
                   ),
                 ],
               ),
@@ -319,7 +318,7 @@ class _ResultPageState extends State<ResultPage> {
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w400,
-                fontSize: 40.0, // 고해상도에 맞게 크기 증가
+                fontSize: 15.0, // 테두리가 커진 만큼 조정
                 fontFamily: CustomFontFamily.hanna,
               ),
             ),

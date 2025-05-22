@@ -22,13 +22,13 @@ Widget buildDesignItem(
       Flexible(
         child: Container(
           width: 300,
-          height: 500,
+          height: 450,
           decoration: BoxDecoration(
             border: Border(
               top: BorderSide(color: frameColor, width: 10),
               bottom: BorderSide(color: frameColor, width: 10),
-              left: BorderSide(color: frameColor, width: 20),
-              right: BorderSide(color: frameColor, width: 20),
+              left: BorderSide(color: frameColor, width: 25),
+              right: BorderSide(color: frameColor, width: 25),
             ),
             image:
                 useImage
