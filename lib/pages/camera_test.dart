@@ -10,18 +10,14 @@ class CameraTestPage extends StatefulWidget {
   final int designIndex;
   final int cellIndex;
 
-  const CameraTestPage({
-    super.key, 
-    this.designIndex = 0, 
-    this.cellIndex = 0,
-  });
+  const CameraTestPage({super.key, this.designIndex = 0, this.cellIndex = 0});
 
   @override
   State<CameraTestPage> createState() => _CameraTestPageState();
 }
 
 class _CameraTestPageState extends State<CameraTestPage> {
-  int _countdown = 10;
+  int _countdown = 8; //사진 8초
   Timer? _timer;
   int _currentImageIndex = 1;
   final int _maxImages = 6; // 6장의 사진을 찍도록 수정
@@ -33,7 +29,7 @@ class _CameraTestPageState extends State<CameraTestPage> {
   CameraController? _cameraController;
   List<CameraDescription>? _cameras;
   bool _isCameraInitialized = false;
-  
+
   // 사진 저장 관련 변수
   final List<String> _capturedImagePaths = [];
   String _appDocumentsPath = "";
@@ -51,21 +47,22 @@ class _CameraTestPageState extends State<CameraTestPage> {
   Future<void> _initSaveDirectory() async {
     try {
       // 앱 문서 디렉토리 경로 가져오기
-      final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
+      final Directory appDocumentsDir =
+          await getApplicationDocumentsDirectory();
       _appDocumentsPath = appDocumentsDir.path;
-      
+
       // 사진 저장을 위한 디렉토리 생성
       _photoDirectory = path.join(_appDocumentsPath, 'commit4cut_photos');
       final Directory photoDir = Directory(_photoDirectory);
-      
+
       if (!await photoDir.exists()) {
         await photoDir.create(recursive: true);
       }
-      
+
       setState(() {
         _captureStatus = "저장 경로: $_photoDirectory";
       });
-      
+
       print("사진이 저장될 경로: $_photoDirectory");
     } catch (e) {
       print("디렉토리 초기화 오류: $e");
@@ -79,24 +76,24 @@ class _CameraTestPageState extends State<CameraTestPage> {
     try {
       // 사용 가능한 카메라 목록 가져오기
       _cameras = await availableCameras();
-      
+
       if (_cameras != null && _cameras!.isNotEmpty) {
         // 전면 카메라 찾기 (사용자 셀피용)
         final frontCamera = _cameras!.firstWhere(
           (camera) => camera.lensDirection == CameraLensDirection.front,
           orElse: () => _cameras!.first, // 전면 카메라가 없으면 첫 번째 카메라 사용
         );
-        
+
         // 카메라 컨트롤러 초기화
         _cameraController = CameraController(
           frontCamera,
           ResolutionPreset.medium,
           enableAudio: false,
         );
-        
+
         // 카메라 컨트롤러 초기화 대기
         await _cameraController!.initialize();
-        
+
         // 카메라가 초기화된 후 추가 확인
         if (_cameraController!.value.previewSize == null) {
           print("경고: 카메라 프리뷰 크기가 null입니다!");
@@ -105,12 +102,12 @@ class _CameraTestPageState extends State<CameraTestPage> {
           });
           return;
         }
-        
+
         if (mounted) {
           setState(() {
             _isCameraInitialized = true;
           });
-          
+
           // 카메라 초기화 완료 후 카운트다운 시작
           _startCountdown();
         }
@@ -147,7 +144,9 @@ class _CameraTestPageState extends State<CameraTestPage> {
   }
 
   Future<void> _capturePhoto() async {
-    if (_cameraController == null || !_cameraController!.value.isInitialized || _cameraController!.value.previewSize == null) {
+    if (_cameraController == null ||
+        !_cameraController!.value.isInitialized ||
+        _cameraController!.value.previewSize == null) {
       setState(() {
         _captureStatus = "카메라가 준비되지 않았습니다.";
       });
@@ -162,10 +161,10 @@ class _CameraTestPageState extends State<CameraTestPage> {
 
       // 사진 찍기
       final XFile photo = await _cameraController!.takePicture();
-      
+
       // 사진을 영구적으로 저장
       final String savedPath = await _savePermanentPhoto(photo.path);
-      
+
       // 촬영 상태 업데이트
       setState(() {
         _isCapturing = false;
@@ -177,7 +176,7 @@ class _CameraTestPageState extends State<CameraTestPage> {
       setState(() {
         if (_currentImageIndex < _maxImages) {
           _currentImageIndex++;
-          _countdown = 10;
+          _countdown = 8;
           _isCounting = true;
         } else {
           // 모든 사진 촬영 완료
@@ -198,13 +197,13 @@ class _CameraTestPageState extends State<CameraTestPage> {
       final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
       final String filename = 'commit4cut_${_currentImageIndex}_$timestamp.jpg';
       final String destPath = path.join(_photoDirectory, filename);
-      
+
       // 임시 파일을 영구 저장 위치로 복사
       final File tempFile = File(tempPath);
       final File savedFile = await tempFile.copy(destPath);
-      
+
       print("사진 저장 완료: $destPath");
-      
+
       return savedFile.path;
     } catch (e) {
       print("사진 저장 오류: $e");
@@ -221,7 +220,7 @@ class _CameraTestPageState extends State<CameraTestPage> {
       arguments: {
         'designIndex': widget.designIndex,
         'cellIndex': widget.cellIndex,
-        'photosPaths': _capturedImagePaths
+        'photosPaths': _capturedImagePaths,
       },
     );
   }
@@ -240,10 +239,7 @@ class _CameraTestPageState extends State<CameraTestPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text(
-          '사진 촬영',
-          style: TextStyle(color: Colors.white),
-        ),
+        title: const Text('사진 촬영', style: TextStyle(color: Colors.white)),
         actions: [
           // 디버그 정보 보기 버튼
           IconButton(
@@ -251,35 +247,38 @@ class _CameraTestPageState extends State<CameraTestPage> {
             onPressed: () {
               showDialog(
                 context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('저장 정보'),
-                  content: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('저장 경로: $_photoDirectory'),
-                        const SizedBox(height: 10),
-                        Text('촬영된 사진 수: ${_capturedImagePaths.length}'),
-                        const SizedBox(height: 10),
-                        if (_capturedImagePaths.isNotEmpty)
-                          ...List.generate(
-                            _capturedImagePaths.length,
-                            (index) => Padding(
-                              padding: const EdgeInsets.only(bottom: 5),
-                              child: Text('${index + 1}: ${path.basename(_capturedImagePaths[index])}'),
-                            ),
-                          ),
+                builder:
+                    (context) => AlertDialog(
+                      title: const Text('저장 정보'),
+                      content: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('저장 경로: $_photoDirectory'),
+                            const SizedBox(height: 10),
+                            Text('촬영된 사진 수: ${_capturedImagePaths.length}'),
+                            const SizedBox(height: 10),
+                            if (_capturedImagePaths.isNotEmpty)
+                              ...List.generate(
+                                _capturedImagePaths.length,
+                                (index) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 5),
+                                  child: Text(
+                                    '${index + 1}: ${path.basename(_capturedImagePaths[index])}',
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          child: const Text('닫기'),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
                       ],
                     ),
-                  ),
-                  actions: [
-                    TextButton(
-                      child: const Text('닫기'),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
               );
             },
           ),
@@ -288,7 +287,9 @@ class _CameraTestPageState extends State<CameraTestPage> {
       body: Stack(
         children: [
           // 카메라 미리보기
-          if (_isCameraInitialized && _cameraController != null && _cameraController!.value.previewSize != null)
+          if (_isCameraInitialized &&
+              _cameraController != null &&
+              _cameraController!.value.previewSize != null)
             SizedBox.expand(
               child: FittedBox(
                 fit: BoxFit.cover,
@@ -299,7 +300,7 @@ class _CameraTestPageState extends State<CameraTestPage> {
                 ),
               ),
             ),
-            
+
           // 카운트다운 오버레이
           if (_isCounting)
             Center(
@@ -319,7 +320,7 @@ class _CameraTestPageState extends State<CameraTestPage> {
                 ),
               ),
             ),
-            
+
           // 사진 촬영 표시
           if (_isCapturing)
             Container(
@@ -327,7 +328,7 @@ class _CameraTestPageState extends State<CameraTestPage> {
               width: double.infinity,
               height: double.infinity,
             ),
-            
+
           // 하단 정보 표시
           Positioned(
             bottom: 20,
@@ -356,10 +357,7 @@ class _CameraTestPageState extends State<CameraTestPage> {
                 const SizedBox(height: 5),
                 Text(
                   '촬영된 사진 수: ${_capturedImagePaths.length}',
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 12,
-                  ),
+                  style: const TextStyle(color: Colors.white70, fontSize: 12),
                 ),
               ],
             ),

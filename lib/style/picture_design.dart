@@ -24,7 +24,7 @@ Widget buildDesignItem(
           width: 300,
           height: 400,
           decoration: BoxDecoration(
-            border: Border.all(color: frameColor, width: 10),
+            border: Border.all(color: frameColor, width: 20), //좌우간격 조절하는 곳
             image:
                 useImage
                     ? const DecorationImage(
@@ -83,17 +83,57 @@ Widget _buildFrameContent(
               Container(
                 height: 40.0,
                 alignment: Alignment.center,
-                child: FittedBox(
-                  fit: BoxFit.fill,
-                  child: Text(
-                    '컴공네컷',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 20.0,
-                      fontFamily: CustomFontFamily.hanna,
+                child: Stack(
+                  children: [
+                    // Stroke effect
+                    FittedBox(
+                      fit: BoxFit.fill,
+                      child: Text(
+                        '컴공네컷',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 20.0,
+                          fontFamily: CustomFontFamily.hanna,
+                          shadows: [
+                            Shadow(
+                              offset: const Offset(-1, -1),
+                              color: Colors.black,
+                              blurRadius: 1,
+                            ),
+                            Shadow(
+                              offset: const Offset(1, -1),
+                              color: Colors.black,
+                              blurRadius: 1,
+                            ),
+                            Shadow(
+                              offset: const Offset(-1, 1),
+                              color: Colors.black,
+                              blurRadius: 1,
+                            ),
+                            Shadow(
+                              offset: const Offset(1, 1),
+                              color: Colors.black,
+                              blurRadius: 1,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                    // Original text
+                    FittedBox(
+                      fit: BoxFit.fill,
+                      child: Text(
+                        '컴공네컷',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 20.0,
+                          fontFamily: CustomFontFamily.hanna,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 55.0),
@@ -219,10 +259,17 @@ Widget _buildPhotoCell(int index, List<String> imagePaths, [bool? useImage]) {
               ? Border.all(color: const Color(0xCC1B1912), width: 1.0)
               : null,
     ),
-    child:
-        index < imagePaths.length
-            ? Image.file(File(imagePaths[index]), fit: BoxFit.cover)
-            : Container(color: Colors.grey.shade200),
+    child: ClipRect(
+      child:
+          index < imagePaths.length
+              ? Image.file(
+                File(imagePaths[index]),
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              )
+              : Container(color: Colors.grey.shade200),
+    ),
   );
 }
 
@@ -240,16 +287,55 @@ Widget _buildTextCell() {
     height: 35,
     color: Colors.transparent,
     margin: const EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
-    child: const Center(
-      child: Text(
-        '컴공네컷',
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w400,
-          fontSize: 20.0,
-          fontFamily: CustomFontFamily.hanna,
+    child: Stack(
+      children: [
+        // Stroke effect
+        Center(
+          child: Text(
+            '컴공네컷',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w400,
+              fontSize: 20.0,
+              fontFamily: CustomFontFamily.hanna,
+              shadows: [
+                Shadow(
+                  offset: const Offset(-1, -1),
+                  color: Colors.black,
+                  blurRadius: 1,
+                ),
+                Shadow(
+                  offset: const Offset(1, -1),
+                  color: Colors.black,
+                  blurRadius: 1,
+                ),
+                Shadow(
+                  offset: const Offset(-1, 1),
+                  color: Colors.black,
+                  blurRadius: 1,
+                ),
+                Shadow(
+                  offset: const Offset(1, 1),
+                  color: Colors.black,
+                  blurRadius: 1,
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
+        // Original text
+        Center(
+          child: Text(
+            '컴공네컷',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w400,
+              fontSize: 20.0,
+              fontFamily: CustomFontFamily.hanna,
+            ),
+          ),
+        ),
+      ],
     ),
   );
 }
