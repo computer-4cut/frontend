@@ -22,9 +22,14 @@ Widget buildDesignItem(
       Flexible(
         child: Container(
           width: 300,
-          height: 400,
+          height: 500,
           decoration: BoxDecoration(
-            border: Border.all(color: frameColor, width: 20), //좌우간격 조절하는 곳
+            border: Border(
+              top: BorderSide(color: frameColor, width: 10),
+              bottom: BorderSide(color: frameColor, width: 10),
+              left: BorderSide(color: frameColor, width: 20),
+              right: BorderSide(color: frameColor, width: 20),
+            ),
             image:
                 useImage
                     ? const DecorationImage(
