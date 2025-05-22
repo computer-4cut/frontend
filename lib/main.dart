@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:commit4cut/pages/start_page.dart';
 import 'package:commit4cut/pages/select_picture.dart';
 import 'package:commit4cut/pages/loading.dart';
-import 'package:commit4cut/pages/camera.dart';
 import 'package:commit4cut/pages/camera_test.dart';
 import 'package:commit4cut/pages/result.dart';
 
@@ -27,7 +26,6 @@ class Commit4cut extends StatelessWidget {
         '/': (context) => const StartPage(title: '컴공네컷'),
         '/select_picture': (context) => const SelectPicturePage(),
         '/loading': (context) => const LoadingPage(),
-        '/camera': (context) => const CameraPage(index: 0),
         '/camera_test': (context) => const CameraTestPage(),
         '/result': (context) => const ResultPage(),
       },
