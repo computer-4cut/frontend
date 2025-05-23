@@ -17,7 +17,7 @@ class CameraTestPage extends StatefulWidget {
 }
 
 class _CameraTestPageState extends State<CameraTestPage> {
-  int _countdown = 1; //사진 8초
+  int _countdown = 10; //사진 10초
   Timer? _timer;
   int _currentImageIndex = 1;
   final int _maxImages = 6; // 6장의 사진을 찍도록 수정
@@ -176,7 +176,7 @@ class _CameraTestPageState extends State<CameraTestPage> {
       setState(() {
         if (_currentImageIndex < _maxImages) {
           _currentImageIndex++;
-          _countdown = 1;
+          _countdown = 10;
           _isCounting = true;
         } else {
           // 모든 사진 촬영 완료

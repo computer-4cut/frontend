@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:commit4cut/style/font.dart';
 import 'package:commit4cut/util.dart';
 import 'package:commit4cut/style/picture_design.dart';
+import 'package:commit4cut/services/qr_api_service.dart';
 import 'dart:ui' as ui;
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/rendering.dart';
-// import 'package:path_provider/path_provider.dart';
-// import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 class ResultPage extends StatefulWidget {
@@ -21,9 +21,9 @@ class _ResultPageState extends State<ResultPage> {
   int? _designIndex;
   List<String>? _imagePaths;
   final GlobalKey _photoCardKey = GlobalKey();
-  final GlobalKey _savePhotoKey = GlobalKey(); // 저장용 별도 키
-  bool _isSaving = false;
-  String _saveMessage = '';
+  final GlobalKey _savePhotoKey = GlobalKey(); // QR 코드 생성용 별도 키
+  bool _isGeneratingQR = false;
+  String _qrMessage = '';
 
   @override
   void didChangeDependencies() {
@@ -346,7 +346,7 @@ class _ResultPageState extends State<ResultPage> {
       ),
       body: Stack(
         children: [
-          // 저장용 숨겨진 위젯 (사용자에게는 보이지 않음)
+          // QR 코드 생성용 숨겨진 위젯 (사용자에게는 보이지 않음)
           Positioned(
             left: -10000, // 화면 밖으로 숨김
             child: RepaintBoundary(
@@ -361,30 +361,32 @@ class _ResultPageState extends State<ResultPage> {
               children: [
                 // 사진 합성 결과
                 RepaintBoundary(key: _photoCardKey, child: _buildPhotoCard()),
-                const SizedBox(height: 20),
-                // 저장 버튼
+                const SizedBox(height: 30),
+                // QR 코드 생성 버튼 (유일한 액션 버튼)
                 GradientButton(
-                  text: '저장하기',
-                  onPressed: _isSaving ? null : () => _saveImage(),
+                  text: 'QR 코드 생성',
+                  onPressed: _isGeneratingQR ? null : () => _generateQRCode(),
                   width: 200,
                   height: 50,
                   fontSize: 20,
+                  gradient: const LinearGradient(
+                    colors: [Colors.purple, Colors.deepPurple],
+                  ),
                 ),
-                if (_saveMessage.isNotEmpty)
+                if (_qrMessage.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      _saveMessage,
+                      _qrMessage,
                       style: TextStyle(
                         fontFamily: CustomFontFamily.dohyeon,
                         fontSize: 16,
-                        color:
-                            _saveMessage.contains('성공') ? Colors.green : Colors.red,
+                        color: _qrMessage.contains('성공') ? Colors.green : Colors.red,
                       ),
                     ),
                   ),
                 const SizedBox(height: 20),
-                // 공유 버튼
+                // 처음으로 버튼
                 GradientButton(
                   text: '처음으로',
                   onPressed: () {
@@ -405,55 +407,186 @@ class _ResultPageState extends State<ResultPage> {
     );
   }
 
-  // 이미지 저장 기능 (고해상도, 디자인 텍스트 제외)
-  void _saveImage() async {
+  // QR 코드 생성 기능
+  void _generateQRCode() async {
     setState(() {
-      _isSaving = true;
-      _saveMessage = '저장 중...';
+      _isGeneratingQR = true;
+      _qrMessage = 'QR 코드 생성 중...';
     });
 
     try {
-      // 저장용 RepaintBoundary를 이미지로 캡쳐 (고해상도)
+      // 먼저 API 서버 상태 확인
+      bool isHealthy = await QRApiService.checkHealth();
+      if (!isHealthy) {
+        setState(() {
+          _qrMessage = 'QR 코드 서버에 연결할 수 없습니다.';
+        });
+        return;
+      }
+
+      // 임시 파일로 이미지 저장 (QR 코드 생성용)
+      File? tempImageFile = await _saveImageToTempFile();
+      if (tempImageFile == null) {
+        setState(() {
+          _qrMessage = 'QR 코드 생성 실패: 이미지 처리 오류';
+        });
+        return;
+      }
+
+      // URL QR 코드 생성 (권장) - 더 큰 QR 코드
+      Uint8List? qrImageBytes = await QRApiService.generateUrlQRCode(
+        imageFile: tempImageFile,
+        boxSize: 15, // 더 큰 QR 코드를 위해 증가
+        border: 6,   // 테두리도 증가
+        errorCorrection: 'M', // 중간 수준 오류 수정
+      );
+
+      // 임시 파일 삭제
+      await tempImageFile.delete();
+
+      if (qrImageBytes != null) {
+        setState(() {
+          _qrMessage = 'QR 코드 생성 성공!';
+        });
+
+        // QR 코드 표시 다이얼로그
+        _showQRCodeDialog(qrImageBytes);
+      } else {
+        setState(() {
+          _qrMessage = 'QR 코드 생성 실패: 서버 오류';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _qrMessage = 'QR 코드 생성 실패: $e';
+      });
+    } finally {
+      setState(() {
+        _isGeneratingQR = false;
+      });
+    }
+  }
+
+  // 임시 파일로 이미지 저장
+  Future<File?> _saveImageToTempFile() async {
+    try {
+      // 저장용 RepaintBoundary를 이미지로 캡쳐
       RenderRepaintBoundary boundary =
           _savePhotoKey.currentContext!.findRenderObject()
               as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio: 5.0); // 더 높은 해상도
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
       ByteData? byteData = await image.toByteData(
         format: ui.ImageByteFormat.png,
       );
 
       if (byteData != null) {
         Uint8List pngBytes = byteData.buffer.asUint8List();
-
-        // 갤러리에 저장
-        final result = await ImageGallerySaver.saveImage(
-          pngBytes,
-          quality: 100,
-          name: 'commit4cut_${DateTime.now().millisecondsSinceEpoch}.png',
-        );
-
-        if (result['isSuccess']) {
-          setState(() {
-            _saveMessage = '저장 성공! 갤러리에서 확인하세요.';
-          });
-        } else {
-          setState(() {
-            _saveMessage = '저장 실패: 권한을 확인해주세요.';
-          });
-        }
-      } else {
-        setState(() {
-          _saveMessage = '저장 실패: 이미지 변환 오류';
-        });
+        
+        // 임시 디렉토리에 파일 저장
+        Directory tempDir = await getTemporaryDirectory();
+        String tempPath = '${tempDir.path}/temp_qr_image_${DateTime.now().millisecondsSinceEpoch}.png';
+        File tempFile = File(tempPath);
+        await tempFile.writeAsBytes(pngBytes);
+        
+        return tempFile;
       }
+      return null;
     } catch (e) {
-      setState(() {
-        _saveMessage = '저장 실패: $e';
-      });
-    } finally {
-      setState(() {
-        _isSaving = false;
-      });
+      print('임시 파일 저장 오류: $e');
+      return null;
     }
   }
+
+  // QR 코드 표시 다이얼로그 (큰 팝업)
+  void _showQRCodeDialog(Uint8List qrImageBytes) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              height: MediaQuery.of(context).size.height * 0.8,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 30),
+                  Text(
+                    'QR 코드',
+                    style: TextStyle(
+                      fontFamily: CustomFontFamily.hsyuji,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'QR 코드를 스캔하여 네컷 사진을 확인하세요!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: CustomFontFamily.dohyeon,
+                      fontSize: 18,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  // 큰 QR 코드 표시
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    height: MediaQuery.of(context).size.width * 0.7,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.grey[300]!, width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          blurRadius: 5,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.memory(
+                        qrImageBytes,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Text(
+                    '화면을 터치하여 닫기',
+                    style: TextStyle(
+                      fontFamily: CustomFontFamily.dohyeon,
+                      fontSize: 16,
+                      color: Colors.grey[500],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 }
